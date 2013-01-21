@@ -1,8 +1,8 @@
-# Perfect-Shell (codename: P-Shell) #
+# CodeBits (codename: CodeBits) #
 
 **Site :** [projectcleverweb.com](http://projectcleverweb.com)  
 **Description :**  
-These are random bits of code we think could be useful outside of Project CleverWeb. While the majority of these will likely be in PHP, they may branch out into HTML/CSS, JavaScript, Python, Ruby, Java and more.
+These are random bits of code we think could be useful outside of Project CleverWeb. While the majority of these will likely be in PHP, they may branch out into HTML/CSS, JavaScript, Python, Ruby, Java and more. Folders for each language will be created as needed.
 
 &nbsp;    
 
