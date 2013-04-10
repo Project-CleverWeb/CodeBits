@@ -1,0 +1,153 @@
+RewriteEngine on
+RewriteBase /
+
+### Rewrite to file>dir if no '.php' if possible ###
+RewriteCond %{REQUEST_FILENAME} !-d 
+RewriteCond %{REQUEST_FILENAME}\.php -f
+### REQUEST_URI used to keep sub-domains valid ###
+RewriteRule .* ./%{REQUEST_URI}.php
+
+ErrorDocument 300 /404.php
+### 404 file must check if dir exists and redirect if so ###
+ErrorDocument 301 /404.php
+ErrorDocument 302 /404.php
+ErrorDocument 303 /404.php
+ErrorDocument 304 /404.php
+ErrorDocument 305 /404.php
+ErrorDocument 306 /404.php
+ErrorDocument 307 /404.php
+ErrorDocument 400 /404.php
+ErrorDocument 401 /404.php
+ErrorDocument 402 /404.php
+ErrorDocument 403 /404.php
+ErrorDocument 404 /404.php
+ErrorDocument 405 /404.php
+ErrorDocument 406 /404.php
+ErrorDocument 407 /404.php
+ErrorDocument 408 /404.php
+ErrorDocument 409 /404.php
+ErrorDocument 410 /404.php
+ErrorDocument 411 /404.php
+ErrorDocument 412 /404.php
+ErrorDocument 413 /404.php
+ErrorDocument 414 /404.php
+ErrorDocument 415 /404.php
+ErrorDocument 416 /404.php
+ErrorDocument 417 /404.php
+ErrorDocument 418 /404.php
+ErrorDocument 500 /404.php
+ErrorDocument 501 /404.php
+ErrorDocument 502 /404.php
+ErrorDocument 503 /404.php
+ErrorDocument 504 /404.php
+ErrorDocument 505 /404.php
+
+### No directly accessing these under any condition ###
+<FilesMatch "\.(htaccess|htpasswd|ini|log|sh)$">
+Order Allow,Deny
+Deny from all
+</FilesMatch>
+
+
+### prepend/append files - disabled ###
+#<FilesMatch "\.(php)$">
+#	<FilesMatch "not_exist.php">
+#		php_value auto_prepend_file prepend.php
+#		php_value auto_append_file append.php
+#	</FilesMatch>
+#</FilesMatch>
+
+
+
+### MOBILE REDIRECT ###
+RewriteEngine On
+RewriteCond %{HTTP_ACCEPT} "text/vnd.wap.wml|application/vnd.wap.xhtml+xml" [NC,OR]
+RewriteCond %{HTTP_USER_AGENT} "acs|alav|alca|amoi|audi|aste|avan|benq|bird|blac|blaz|brew|cell|cldc|cmd-" [NC,OR]
+RewriteCond %{HTTP_USER_AGENT} "dang|doco|eric|hipt|inno|ipaq|java|jigs|kddi|keji|leno|lg-c|lg-d|lg-g|lge-" [NC,OR]
+RewriteCond %{HTTP_USER_AGENT}  "maui|maxo|midp|mits|mmef|mobi|mot-|moto|mwbp|nec-|newt|noki|opwv" [NC,OR]
+RewriteCond %{HTTP_USER_AGENT} "palm|pana|pant|pdxg|phil|play|pluc|port|prox|qtek|qwap|sage|sams|sany" [NC,OR]
+RewriteCond %{HTTP_USER_AGENT} "sch-|sec-|send|seri|sgh-|shar|sie-|siem|smal|smar|sony|sph-|symb|t-mo" [NC,OR]
+RewriteCond %{HTTP_USER_AGENT} "teli|tim-|tosh|tsm-|upg1|upsi|vk-v|voda|w3cs|wap-|wapa|wapi" [NC,OR]
+RewriteCond %{HTTP_USER_AGENT} "wapp|wapr|webc|winw|winw|xda|xda-" [NC,OR]
+RewriteCond %{HTTP_USER_AGENT} "up.browser|up.link|windowssce|iemobile|mini|mmp" [NC,OR]
+RewriteCond %{HTTP_USER_AGENT} "symbian|midp|wap|phone|pocket|mobile|pda|psp|chrome" [NC]
+RewriteCond %{HTTP_USER_AGENT} !macintosh [NC] 
+### THIS IS WHERE YOUR MOBILE SITE IS LOCATED, USE FULL "HTTP://" PATH! ###
+RewriteRule ^(.*)$ http://%{HTTP_HOST}%{SCRIPT_FILENAME}?%{QUERY_STRING}&mobile=1 [L,R=302]
+
+
+### CACHE ###
+<FilesMatch "\.(html|htm|xml|txt|css|js|jpg|jpeg|png|gif|swf|ico|pdf|flv)$">
+	Header set Cache-Control "max-age=3600, proxy-revalidate"
+</FilesMatch>
+
+
+### explicitly disable caching for scripts and other dynamic files ###
+<FilesMatch ".(pl|php|cgi|spl|scgi|fcgi)$">
+	Header unset Cache-Control
+</FilesMatch>
+
+
+### for troubleshooting ###
+SetEnv SERVER_ADMIN webmaster@example.com
+
+
+### SECURITY - limits server activity for visitors ###
+Options -ExecCGI -Indexes -All +FollowSymLinks
+
+### proc/self/environ? no way! ###
+RewriteCond %{QUERY_STRING} proc/self/environ [OR]
+ 
+
+### Block out any script trying to set a mosConfig value through the URL ###
+RewriteCond %{QUERY_STRING} mosConfig_[a-zA-Z_]{1,21}(=|\%3D) [OR]
+ 
+
+### Block out any script trying to base64_encode crap to send via URL ###
+RewriteCond %{QUERY_STRING} base64_encode.*(.*) [OR]
+
+### Block out any script that includes a <script> tag in URL ###
+RewriteCond %{QUERY_STRING} (<|%3C).*script.*(>|%3E) [NC,OR]
+
+### Block out any script trying to set a PHP GLOBALS variable via URL ###
+RewriteCond %{QUERY_STRING} GLOBALS(=|[|\%[0-9A-Z]{0,2}) [OR]
+
+### Block out any script trying to modify a _REQUEST variable via URL ###
+RewriteCond %{QUERY_STRING} _REQUEST(=|[|\%[0-9A-Z]{0,2})
+
+### Send all blocked request to homepage with 403 Forbidden header ###
+RewriteRule ^(.*)$ index.php [F,L]
+
+
+### compresses php/saves bandwidth/improves loading time ###
+ServerSignature Off
+<ifModule mod_php4.c>
+	php_value zlib.output_compression 16386
+</ifModule>
+
+
+### instruct browser to download these files ###
+AddType application/octet-stream .avi
+AddType application/octet-stream .mpg
+AddType application/octet-stream .wmv
+AddType application/octet-stream .mp3
+AddType application/octet-stream .apk
+AddType application/octet-stream .zip
+AddType application/octet-stream .doc
+AddType application/octet-stream .mp4
+AddType application/octet-stream .m4a
+AddType application/octet-stream .acc
+
+
+### compress these ###
+AddOutputFilterByType DEFLATE text/plain
+AddOutputFilterByType DEFLATE text/html
+AddOutputFilterByType DEFLATE text/xml
+AddOutputFilterByType DEFLATE text/css
+AddOutputFilterByType DEFLATE application/xml
+AddOutputFilterByType DEFLATE application/xhtml+xml
+AddOutputFilterByType DEFLATE application/rss+xml
+AddOutputFilterByType DEFLATE application/javascript
+AddOutputFilterByType DEFLATE application/x-javascript
+
+
