@@ -15,9 +15,12 @@ sleep 30
 screen -S mc -X quit
 sleep 5
 
-# Your backup script here
+# Backup script here
+echo "Starting backup on "$LOGSTAMP >> $LOGFILE
+tar cvf $BCKFILE $MCDIR >> $LOGFILE
+echo "
 
-
+" # create some seperation if more than 1 backup per day
 
 # start minecraft
 cd $MCDIR

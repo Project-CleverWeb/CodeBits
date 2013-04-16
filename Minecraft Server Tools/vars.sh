@@ -29,11 +29,11 @@ BCKDIRNAME=backups
 
 # Backup Vars
 # feel free to use these in your backup scripts
-TIMESTAMP=$(date +%y%m%d.%T)
-LOGSTAMP=$(date +%y-%m-%d\ %T)
+TIMESTAMP=$(date +%y%m%d.%H%M%S)
+LOGSTAMP=$(date +%y-%m-%d)" at "$(date +%T)
 BCKDIR=$MCDIR/$BCKDIRNAME/$(date +%y-%m)
 LOGDIR=$BCKDIR
-BCKFILE=$BCKDIR/mc.backup.$MCWORLD.$TIMESTAMP.tar.gz
+BCKFILE=$BCKDIR/mc.backup.$MCWORLD.$TIMESTAMP.tar
 LOGFILE=$LOGDIR/mc.backup.$MCWORLD.$TIMESTAMP.log
 
 # Make sure we start the script in the right folder
