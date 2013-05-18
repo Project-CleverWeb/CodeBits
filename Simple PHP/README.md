@@ -1,0 +1,2 @@
+#Simple PHP#
+Each of the following files contains a short or simple PHP script that can be effective in larger scripts. Effecively these are just some things you can quickly copy/paste, so you can focus on the more complex areas of your code. Enjoy.
